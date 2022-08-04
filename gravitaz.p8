@@ -114,6 +114,7 @@ function _init()
  
  pal(15,136,1)
  pal(4,129,1)
+ pal(14,141,1)
 end
 
 --~~~~~~~~~~~~--
@@ -1414,8 +1415,10 @@ function stars ()
  end
 
  if sc == 1 then 
-  spawnparticle(flr(rnd(126))+1,sh,0,flr(rnd(3))+1,6,128,0,0)
-  spawnparticle(flr(rnd(126))+1,sh+rnd(6),0,flr(rnd(3))+1,6,128,0,0)
+  spawnparticle(flr(rnd(126))+1,
+  sh,0,flr(rnd(3))+14,128,0,0)
+  spawnparticle(flr(rnd(126))+1,
+  sh+rnd(6),0,flr(rnd(3))+1,14,128,0,0)
  
  end
 end
