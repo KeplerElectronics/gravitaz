@@ -1,11 +1,11 @@
 pico-8 cartridge // http://www.pico-8.com
-version 29
+version 36
 __lua__
 --gravitas
 --by kepler
 --[[
 
- v2 changelog:
+ v1.1 changelog:
 
   added bossfights
 
@@ -20,6 +20,25 @@ __lua__
   cleaned up some code (split some functions into seperate, moved code from draw to where it should have been)
 
   added persistent hiscores (now save between sessions)
+  
+  
+ v1.2 changelog:
+ 
+  better logo!
+  
+  space dust!
+  
+  less distracting stars!
+  
+ v1.3 changelog:
+  
+  homing projectiles have 
+  velocity, so you can juke
+  
+  'lil score popups when you
+  get a guy 
+  
+  
   
 ]]
 hiscore = {one = 0,
@@ -109,7 +128,7 @@ function _init()
       gamestate 7 = playerdeath
       ]]
  money = 0
- wave = 1
+ wave = 19
  selcount = 1
  
  pal(15,136,1)
@@ -189,10 +208,17 @@ function _draw()
  end
 
  for particle in all(particles) do
-  circfill(particle.x,
-           particle.y,
-           particle.rad,
-           particle.clr)
+  if particle.type == 6 then
+	  print("100",particle.x,
+	           particle.y,
+	           particle.clr)
+  else
+       
+	  circfill(particle.x,
+	           particle.y,
+	           particle.rad,
+	           particle.clr)
+  end
  end
  
  map(16,1,wavescreen.x,wavescreen.y,10,2)
@@ -385,6 +411,16 @@ function laserstuffs()
     if enemy.y >= laser.y and enemy.y <=laser.y+(scl*(enemy.scale-1)) then
      score.hundred += 1
      enemy.hp -= 1
+     
+     spawnparticle (enemy.x,
+     enemy.y, 
+     0,0.0001,
+     7 ,
+     40,
+     6,10)
+
+                  
+                  
      if enemy.hp <= 0 then
       death(enemy.x,enemy.y)
       del(enemies,enemy)
@@ -657,7 +693,7 @@ function enemystuffs()
       enemy.bt = #ebeams+1
      end 
     elseif enemy.class == 6 then
-     homingspawn(enemy.x+2,enemy.y+5)   
+     homingspawn(enemy.x+2,enemy.y+5,0)   
      sfx(8,0,0)
     else
      if wave == 15 then
@@ -858,10 +894,11 @@ function enemylaserspawn (elaserx,elasery)
  add(elasers,elaser)
 end
 
-function homingspawn (x,y)
+function homingspawn (x,y,vx)
  homing = {}
  homing.x = x
  homing.y = y
+ homing.vx = vx
  add(homings,homing)
 end
 
@@ -1227,14 +1264,19 @@ function hominglogic ()
   homing.y +=1
   if homing.y >= 64 then
    if player.x > homing.x then
-    homing.x += 1
+    if homing.vx < 1 then
+     homing.vx += .19
+    end
    elseif player.x < homing.x then 
-    homing.x -= 1
+    if homing.vx > -1 then
+     homing.vx -= .19
+    end
    end
   end
   if homing.y >= 128 then
    del(homings,homing)
   end
+  homing.x += homing.vx
   if player.x >= homing.x-3 and player.x <= homing.x+3 then
     if player.y+8 >= homing.y and player.y <= homing.y then
     player.dead = true
@@ -1517,9 +1559,9 @@ __gfx__
 00000000077777700777777007777770077777700777777007777770077777707778877607000070777bb7760777777077799776000000000000000000000000
 000000000788887007bbbb700799997007cccc70072222700733337007777770778888760777777077bbbb760777777077999976000000000000000000000000
 0000000007777770077777700777777007777770077777700777777007777770778888760777777077bbbb760779977077999976000000000000000000000000
-00000000077007700007700007077070070000700070070000777700077887707778877607777770777bb7760709907077799776000000000000000000000000
-000000000070070000700700000770000070070000700700077007700788887007777760077bb770077777600700007007777760000000000000000000000000
-00000000000000000000000000000000000000000000000007000070000000000066660000b00b00006666000000000000666600000000000000000000000000
+00000000077667700667766007677670076666700676676007766770077887707778877607777770777bb7760709907077799776000000000000000000000000
+000000000670076000766700060770600670076000700700076006700788887007777760077bb770077777600700007007777760000000000000000000000000
+00000000006006000060060000066000006006000060060006000060000000000066660000b00b00006666000000000000666600000000000000000000000000
 33300000000880000000000000000000000000000000000000000000000000000077770000000000007777000000000000777700000000000000000000000000
 00330000000880000000000000000000000000000000000000000000007777000777777000777700077777700077770007777770000000000000000000000000
 3330000000088000000000000000000000000000000000000000000007777770777cc77607777770777227760777777077733776000000000000000000000000
